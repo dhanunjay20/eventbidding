@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    image: eventbidding:latest
+    container_name: eventbidding_app
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATA_MONGODB_URI=${SPRING_DATA_MONGODB_URI}
+      - SPRING_DATA_MONGODB_DATABASE=${SPRING_DATA_MONGODB_DATABASE:-eventbidding}
+      - JAVA_OPTS=${JAVA_OPTS:-}
+    restart: unless-stopped
+    depends_on: [] # optionally add 'mongo' if using local mongodb service below
+
+  # Optional local MongoDB for development (uncomment if you want a local DB)
+  # mongo:
+  #   image: mongo:6.0
+  #   container_name: eventbidding_mongo
+  #   ports:
+  #     - "27017:27017"
+  #   volumes:
+  #     - mongo_data:/data/db
+
+#volumes:
+#  mongo_data:
+#    driver: local
+
