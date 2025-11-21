@@ -27,8 +27,7 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:5173" , "https://webidclient.tconsolutions.com status" +
-                                "") // <-- explicit allowed origin!
+                        .allowedOrigins("http://localhost:5173" , "https://webidclient.tconsolutions.com") // <-- explicit allowed origin!
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .exposedHeaders("Authorization", "content-type")
