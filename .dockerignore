@@ -1,9 +1,0 @@
-target/
-*.log
-*.tmp
-*.swp
-# Exclude Git and IDE files
-.git/
-.vscode/
-.idea/
-# Keep project build scripts and sources in context (do NOT ignore mvnw, .mvn, pom.xml, src)
