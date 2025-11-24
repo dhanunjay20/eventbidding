@@ -20,14 +20,13 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // CORS configuration to explicitly allow frontend dev server
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:5173" , "https://webidclient.tconsolutions.com") // <-- explicit allowed origin!
+                        .allowedOrigins("http://localhost:5173", "https://webidclient.tconsolutions.com")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .exposedHeaders("Authorization", "content-type")
@@ -43,22 +42,24 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Disable CSRF for stateless API requests
-                .cors(cors -> {}) // Enable CORS with above bean
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> {})
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/user/register",
                                 "/api/vendor/register",
+                                "/api/user/login",
+                                "/api/vendor/login",       // <-- ADD THIS LINE
                                 "/api/auth/login"
                         ).permitAll()
-                        // Allow unauthenticated GETs for user and vendor read endpoints (e.g., listing or fetching public profiles)
-                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/user/**").permitAll()
-                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/vendor/**").permitAll()
-                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll() // Permit all preflight
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+                        // if you want public GETs for users/vendors, uncomment below lines:
+                        // .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/user/**").permitAll()
+                        // .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/vendor/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // Stateless (JWT-ready)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }
 }
